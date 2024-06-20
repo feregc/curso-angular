@@ -1,16 +1,11 @@
-const name : string = 'Fernando';
-let hpPoints : number | 'FULL' = 95;
-const isAlive : boolean = true;
-
-
-hpPoints = 'FULL';
+const name: string = "Strider";
+let hpPoints: number | "FULL" = "FULL";
+const isAlive: boolean = true;
 
 console.log({
     name,
     hpPoints,
-    isAlive
+    isAlive,
 });
-
-
 
 export {};
