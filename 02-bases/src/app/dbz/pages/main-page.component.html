@@ -3,11 +3,16 @@
 <div class="row">
   <!-- Listado de los personajes -->
   <div class="col">
-    <dbz-list [characterList]="characters"></dbz-list>
+    <dbz-list
+      [characterList]="characters"
+      (onDelete)="onDeleteCharacter($event)"
+    ></dbz-list>
   </div>
 
   <!-- formulario para agregar un nuevo personaje -->
   <div class="col">
-    <dbz-add-character (onNewCharacter)="onNewCharacter($event)"></dbz-add-character>
+    <dbz-add-character
+      (onNewCharacter)="onAddCharacter($event)"
+    ></dbz-add-character>
   </div>
 </div>
