@@ -1,12 +1,20 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Gif, SearchResponse } from '../interfaces/gifs.interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GifsService {
-  private _tagHistory: string[] = [];
+  public gifList: Gif[] = [];
 
-  constructor() {}
+  private _tagHistory: string[] = [];
+  private serviceUrl: string = 'https://api.giphy.com/v1/gifs';
+  private apiKey: string = 'LSbzBJWfH7iTTdMICWyWTf0A0A56wT9x';
+
+  constructor(private http: HttpClient) {
+    this.loadLocalStorage();
+  }
 
   get tagsHistory() {
     return [...this._tagHistory];
@@ -21,10 +29,38 @@ export class GifsService {
 
     this._tagHistory.unshift(tag);
     this._tagHistory = this._tagHistory.splice(0, 10);
+    this.saveLocalStorage();
+  }
+
+  private saveLocalStorage() {
+    localStorage.setItem('history', JSON.stringify(this._tagHistory));
+  }
+
+  private loadLocalStorage(): void {
+    const tags = localStorage.getItem('history');
+
+    if (!tags) return;
+
+    this._tagHistory = JSON.parse(tags);
+
+    if (this._tagHistory.length === 0) return;
+
+    this.searchTag(this._tagHistory[0]);
   }
 
   searchTag(tag: string): void {
     if (tag.length === 0) return;
     this.orginazeHistory(tag);
+
+    const params = new HttpParams()
+      .set('api_key', this.apiKey)
+      .set('limit', '10')
+      .set('q', tag);
+
+    this.http
+      .get<SearchResponse>(`${this.serviceUrl}/search`, { params })
+      .subscribe((res) => {
+        this.gifList = res.data;
+      });
   }
 }
